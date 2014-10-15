@@ -190,18 +190,17 @@ module Rack
         end
 
         def match_options?(env, path = build_path_from_env(env))
-          matches = []
           request = Rack::Request.new(env)
-
+          
           # negative matches
-          matches << !string_matches?(path, options[:not]) if options[:not]
+          return false unless !string_matches?(path, options[:not]) if options[:not]
 
           # possitive matches
-          matches << string_matches?(env['REQUEST_METHOD'], options[:method]) if options[:method]
-          matches << string_matches?(request.host, options[:host]) if options[:host]
-          matches << string_matches?(request.scheme, options[:scheme]) if options[:scheme]
+          return false unless string_matches?(env['REQUEST_METHOD'], options[:method]) if options[:method]
+          return false unless string_matches?(request.host, options[:host]) if options[:host]
+          return false unless string_matches?(request.scheme, options[:scheme]) if options[:scheme]
 
-          matches.all?
+          return true
         end
 
       private
